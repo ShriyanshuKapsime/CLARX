@@ -69,6 +69,11 @@ def test():
     """Health check endpoint"""
     return jsonify({"message": "Backend running successfully!", "status": "ok"})
 
+@app.route('/test/save_price', methods=['POST'])
+def test_save_price():
+    data = request.get_json(silent=True)
+    if not data:
+        return {"error": "No JSON provided"}, 400
 
 @app.route('/analyze', methods=['POST'])
 @rate_limit
