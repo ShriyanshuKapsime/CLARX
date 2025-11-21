@@ -1,3 +1,5 @@
+console.log("INDEX.JS IS LOADED!");
+
 lucide.createIcons();
 
 async function analyze() {
@@ -8,7 +10,6 @@ async function analyze() {
         return;
     }
 
-    // Show loading state
     const analyzeBtn = document.getElementById("analyzeBtn");
     analyzeBtn.innerText = "Analyzing...";
     analyzeBtn.disabled = true;
@@ -27,10 +28,9 @@ async function analyze() {
         }
 
         const data = await response.json();
-
         console.log("Analysis Result:", data);
 
-        // Redirect to result page (later you will create results.html)
+        // store for results page
         localStorage.setItem("analysis_result", JSON.stringify(data));
         window.location.href = "results.html";
 
@@ -39,6 +39,6 @@ async function analyze() {
         alert("Error analyzing the URL. Make sure backend is running.");
     }
 
-    analyzeBtn.innerText = "Analyze Now";
+    analyzeBtn.innerText = "Analyze";
     analyzeBtn.disabled = false;
 }

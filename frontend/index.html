@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,6 +11,8 @@
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="css/index.css">
 </head>
 
@@ -19,7 +22,7 @@
   <header>
     <div class="nav-container">
       <div class="brand">
-        <div class="brand-icon"><i data-lucide="shield-alert" style="color:white;"></i></div>
+        <div class="brand-icon"><i data-lucide="shield-alert"></i></div>
         CLARX
       </div>
       <nav>
@@ -45,18 +48,17 @@
     <!-- INPUT CARD -->
     <div class="input-card">
       <input id="urlInput" type="url" placeholder="Paste product link here..." />
-      <button class="analyze-btn" onclick="analyze()">
-        Analyze
-        <i data-lucide="arrow-right"></i>
+      <button id="analyzeBtn" type="button" class="analyze-btn" onclick="analyze()">
+      Analyze
+      <i data-lucide="arrow-right"></i>
       </button>
+
     </div>
   </section>
 
   <!-- FEATURES -->
   <section id="features" class="features-section fade-up">
-    <h2 class="hero-title" style="font-size:34px; text-align:center;">
-      Transparent Shopping, Simplified
-    </h2>
+    <h2 class="section-title">Transparent Shopping, Simplified</h2>
 
     <div class="features-grid">
 
@@ -85,70 +87,74 @@
       </div>
 
     </div>
-    <section id="mission" class="mission-section">
-        <div class="mission-card">
-            <h2>Our Mission: Transparency in Online Shopping</h2>
-            <p>
-            CLARX empowers consumers by revealing hidden dark patterns, exposing fake discounts,
-            identifying inflated MRPs, and ensuring fair e-commerce practices. Using our rule-based 
-            analysis engine, we allow shoppers to make informed choices instantly.
-            </p>
-            <p>
-            We believe every consumer deserves clarity, honesty, and full transparency. Our mission is 
-            to become India’s most trusted consumer-protection engine for online retail.
-            </p>
-        </div>
-    </section>
+  </section>
 
-    <footer class="footer-section" id="contact">
+  <!-- MISSION -->
+  <section id="mission" class="mission-section fade-up">
+    <div class="mission-card">
+      <h2>Our Mission: Transparency in Online Shopping</h2>
+      <p>
+        CLARX empowers consumers by revealing hidden dark patterns, exposing fake discounts,
+        identifying inflated MRPs, and ensuring fair e-commerce practices.
+      </p>
+      <p>
+        We believe every consumer deserves clarity, honesty, and full transparency.
+        Our mission is to become India’s most trusted consumer-protection engine for online retail.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact" class="footer-section">
     <div class="footer-container">
 
-        <div class="footer-col">
+      <div class="footer-col">
         <div class="brand">
-            <div class="brand-icon"><i data-lucide="shield-alert" style="color:white;"></i></div>
-            <span class="brand-name">CLARX</span>
+          <div class="brand-icon"><i data-lucide="shield-alert"></i></div>
+          <span class="brand-name">CLARX</span>
         </div>
         <p class="footer-text">
-            Consumer Lens & Analysis for Retail eXposure  
-            <br>Empowering online shoppers with transparency.
+          Consumer Lens & Analysis for Retail eXposure<br>
+          Empowering online shoppers with transparency.
         </p>
-        </div>
+      </div>
 
-        <div class="footer-col">
+      <div class="footer-col">
         <h4>Product</h4>
         <ul>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#mission">Our Mission</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#mission">Our Mission</a></li>
         </ul>
-        </div>
+      </div>
 
-        <div class="footer-col">
+      <div class="footer-col">
         <h4>Company</h4>
         <ul>
-            <li><a href="#">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
-        </div>
+      </div>
 
-        <div class="footer-col">
+      <div class="footer-col">
         <h4>Legal</h4>
         <ul>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
         </ul>
-        </div>
+      </div>
 
     </div>
 
     <div class="footer-bottom">
-        <p>
-        <strong>Disclaimer:</strong> CLARX analyzes publicly available data for educational purposes.
-        We are not affiliated with any e-commerce platform.
-        </p>
-        <p>© 2025 CLARX. All rights reserved.</p>
+      <p><strong>Disclaimer:</strong> CLARX analyzes publicly available data for educational purposes.</p>
+      <p>© 2025 CLARX. All rights reserved.</p>
     </div>
-    </footer>
-  </section>
-<script src="js/index.js" defer></script>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="js/index.js" defer></script>
+
 </body>
 </html>
