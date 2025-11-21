@@ -1,0 +1,106 @@
+:root{
+  --bg:#eef3fb;
+  --card:#ffffffcc;
+  --muted:#6b7280;
+  --accent:#2563eb;
+  --radius:18px;
+  --shadow: 0 20px 50px rgba(15,23,42,0.08);
+  --risk:#facc15;
+  --risk-bg: rgba(250,204,21,0.12);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  background:var(--bg);
+  color:#0f172a;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.page-header{
+  display:flex;
+  align-items:center;
+  padding:22px clamp(16px,4vw,48px);
+  border-bottom:1px solid rgba(15,23,42,0.03);
+  background:transparent;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{
+  width:44px;height:44px;border-radius:10px;background:var(--accent);display:grid;place-items:center;color:#fff;
+  box-shadow:0 10px 26px rgba(37,99,235,0.18);
+}
+.brand-text{font-weight:700;font-size:18px}
+
+.container{
+  max-width:1100px;
+  margin:34px auto;
+  padding:0 clamp(16px,4vw,48px) 64px;
+}
+
+/* cards */
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:22px;
+  border:1px solid rgba(255,255,255,0.6);
+  box-shadow:var(--shadow);
+  margin-bottom:24px;
+}
+
+/* trust card */
+.trust-card{display:flex;gap:20px;align-items:center}
+.trust-grade{
+  width:160px;height:160px;border-radius:22px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#fff9e3,#fff2c6);
+  font-weight:800;font-size:62px;
+  box-shadow:inset 0 2px 8px rgba(255,255,255,0.45);
+}
+.trust-copy h1{margin:0 0 10px;font-size:20px}
+.muted{color:var(--muted);font-size:14px}
+
+/* risk */
+.risk-pill{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;background:var(--risk-bg);font-weight:700}
+.risk-dot{width:10px;height:10px;background:var(--risk);border-radius:50%}
+
+/* grids */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:12px}
+.pattern-card{padding:14px;border-radius:14px;background:rgba(255,255,255,0.9);border:1px solid rgba(15,23,42,0.03)}
+.pattern-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.severity{padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
+.severity.high{background:rgba(239,68,68,0.1);color:#b91c1c}
+.severity.medium{background:rgba(251,191,36,0.12);color:#b45309}
+.severity.low{background:rgba(34,197,94,0.12);color:#15803d}
+
+/* price card */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:12px 0 18px}
+.stat{padding:12px;border-radius:12px;background:rgba(255,255,255,0.85);border:1px solid rgba(15,23,42,0.03)}
+.stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.stat-value{font-size:18px;font-weight:800;margin-top:6px}
+
+/* chart */
+.chart-wrapper{height:260px;margin-top:10px;border-radius:12px;overflow:hidden;border:1px solid rgba(15,23,42,0.03);background:linear-gradient(180deg,#fff,#fbfdff)}
+
+/* history list */
+.history-list{margin-top:14px;border-radius:10px;padding:10px;background:rgba(255,255,255,0.6)}
+.history-row{display:flex;justify-content:space-between;padding:8px;border-bottom:1px dashed rgba(15,23,42,0.03)}
+.history-row:last-child{border-bottom:none;font-weight:600}
+
+/* timer area */
+.timer-area{display:flex;flex-direction:column;gap:12px}
+.status-pill{display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(239,68,68,0.1);color:#b91c1c;font-weight:700}
+.confidence-pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(37,99,235,0.12);color:var(--accent);font-weight:700}
+.reason-panel{background:rgba(255,255,255,0.9);padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.03)}
+.reason-list{margin:0;padding:0;list-style:none}
+.reason-list li{padding:8px;border-radius:8px;background:rgba(248,250,255,0.95);margin-bottom:8px}
+
+/* back link */
+.back-link{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-weight:700;text-decoration:none;margin-top:8px}
+
+/* responsive tweaks */
+@media (max-width:720px){
+  .trust-card{flex-direction:row;gap:12px}
+  .trust-grade{width:120px;height:120px;font-size:46px}
+  .chart-wrapper{height:220px}
+  .container{padding:0 18px 48px}
+}

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CLARX — Analysis Result</title>
+
+  <!-- Fonts + icons + chart library -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- page css -->
+  <link rel="stylesheet" href="css/results.css">
+</head>
+<body>
+  <header class="page-header">
+    <div class="brand">
+      <div class="brand-icon"><i data-lucide="shield-alert"></i></div>
+      <div class="brand-text">CLARX</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card trust-card" id="trustCard">
+      <div class="trust-grade"><span id="trustGrade">—</span></div>
+      <div class="trust-copy">
+        <h1 id="pageTitle">Shop Smarter. Spot Manipulation.</h1>
+        <p id="productSummary" class="muted">Analysis summary will appear here.</p>
+        <div class="risk-pill" id="riskPill">
+          <span class="risk-dot"></span>
+          <span class="risk-label">Waiting</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <h2>Dark Pattern Violations</h2>
+        <p class="muted">Detected UI manipulation, urgency tricks, fake add-ons etc.</p>
+      </div>
+      <div id="violationsGrid" class="card-grid">
+        <!-- dynamically populated -->
+      </div>
+    </section>
+
+    <section class="card price-card">
+      <div class="section-header">
+        <h2>Price & History</h2>
+        <p class="muted">Current price, tracked history and trends.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-label">Current Price</div>
+          <div class="stat-value" id="currentPrice">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">MRP (site)</div>
+          <div class="stat-value" id="siteMrp">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Last recorded</div>
+          <div class="stat-value" id="lastRecorded">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">History points</div>
+          <div class="stat-value" id="historyCount">0</div>
+        </div>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas id="priceChart"></canvas>
+      </div>
+
+      <div class="history-list" id="priceHistoryList">
+        <!-- price history rows -->
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <h2>Timer / Scarcity Analysis</h2>
+        <p class="muted">Client vs server evidence and explanation.</p>
+      </div>
+      <div class="timer-area">
+        <div class="status-pill" id="timerStatus">Unknown</div>
+        <div class="confidence-pill" id="timerConfidence">—</div>
+        <div class="reason-panel" id="timerReasons">
+          <ul class="reason-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <a class="back-link" href="index.html"><i data-lucide="arrow-left"></i> Back to home</a>
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="js/results.js" defer></script>
+</body>
+</html>
