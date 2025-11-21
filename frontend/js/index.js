@@ -30,9 +30,11 @@ async function analyze() {
         const data = await response.json();
         console.log("Analysis Result:", data);
 
-        // store for results page
+        // store result for next page
         localStorage.setItem("analysis_result", JSON.stringify(data));
-        window.location.href = "results.html";
+
+        // FIX: redirect to actual results page
+        window.location.href = "2ndPage.html";
 
     } catch (error) {
         console.error(error);
@@ -42,3 +44,4 @@ async function analyze() {
     analyzeBtn.innerText = "Analyze";
     analyzeBtn.disabled = false;
 }
+
