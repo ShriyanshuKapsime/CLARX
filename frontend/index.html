@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClearBuy | Shop Smarter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Frutiger";
+        src: url("https://fonts.cdnfonts.com/s/59217/FrutigerLTStd-Bold.woff") format("woff");
+        font-weight: 600 800;
+        font-style: normal;
+      }
+
+      :root {
+        --background: #e8edf7;
+        --surface: rgba(255, 255, 255, 0.78);
+        --border: rgba(255, 255, 255, 0.6);
+        --text-primary: #0f172a;
+        --text-muted: #6b7280;
+        --accent: #2563eb;
+        --shadow: 0 25px 70px rgba(15, 23, 42, 0.12);
+        --radius: 24px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--background);
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      b,
+      strong,
+      h1,
+      h2 {
+        font-family: "Frutiger", "Inter", sans-serif;
+        font-weight: 600;
+      }
+
+      .container {
+        width: min(600px, 100%);
+        background: var(--surface);
+        border-radius: var(--radius);
+        padding: 48px 40px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 32px;
+      }
+
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: var(--accent);
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin: 0 0 12px;
+        line-height: 1.1;
+      }
+
+      h1 span {
+        color: var(--accent);
+      }
+
+      p {
+        color: var(--text-muted);
+        margin: 0 0 32px;
+        line-height: 1.6;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      input[type="url"] {
+        flex: 1;
+        padding: 16px 20px;
+        border-radius: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        font-size: 1rem;
+        font-family: inherit;
+        background: white;
+        transition: border-color 200ms ease, box-shadow 200ms ease;
+      }
+
+      input[type="url"]:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      button {
+        padding: 16px 32px;
+        border-radius: 16px;
+        border: none;
+        background: var(--accent);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: transform 200ms ease, box-shadow 200ms ease;
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .helper-text {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-top: 8px;
+      }
+
+      .error {
+        color: #ef4444;
+        font-size: 0.9rem;
+        margin-top: 8px;
+        display: none;
+      }
+
+      .error.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="brand">
+        <div class="brand-icon">CB</div>
+        <span style="font-weight: 600; font-size: 1.2rem;">ClearBuy</span>
+      </div>
+
+      <h1>
+        Shop Smarter. Spot Manipulation. <br />
+        <span>Buy with Confidence.</span>
+      </h1>
+
+      <p>
+        Paste any product link from Flipkart, Amazon, Myntra, etc. and we'll analyze it for dark patterns,
+        fake discounts, true MRP, and price history.
+      </p>
+
+      <form id="analyzeForm" onsubmit="handleSubmit(event)">
+        <div class="input-group">
+          <input
+            type="url"
+            id="productUrl"
+            placeholder="Paste product link here..."
+            required
+          />
+          <button type="submit">Analyze Now →</button>
+        </div>
+        <div class="error" id="errorMessage"></div>
+        <div class="helper-text">
+          Works with Amazon, Flipkart, Myntra, and other major Indian e-commerce platforms
+        </div>
+      </form>
+    </div>
+
+    <script>
+      function handleSubmit(event) {
+        event.preventDefault();
+        const urlInput = document.getElementById('productUrl');
+        const errorEl = document.getElementById('errorMessage');
+        const url = urlInput.value.trim();
+
+        // Hide error
+        errorEl.classList.remove('show');
+
+        // Validate URL
+        if (!url || (!url.startsWith('http://') && !url.startsWith('https://'))) {
+          errorEl.textContent = 'Please enter a valid URL starting with http:// or https://';
+          errorEl.classList.add('show');
+          return;
+        }
+
+        // Redirect to results page with URL parameter
+        window.location.href = `2ndPage.html?url=${encodeURIComponent(url)}`;
+      }
+    </script>
+  </body>
+</html>
+
