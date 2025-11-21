@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLARX – Consumer Lens & Retail Exposure Analysis</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon"><i data-lucide="shield-alert"></i></div>
+        CLARX
+      </div>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#mission">Mission</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero-section fade-up">
+    <h1 class="hero-title">
+      Shop Smarter. Spot Manipulation.<br />
+      <span class="gradient-text">Buy with Confidence.</span>
+    </h1>
+
+    <p class="hero-subtext">
+      Paste any product link from Amazon, Flipkart, or Myntra and CLARX will analyze dark patterns,
+      fake discounts, real MRP, and price history — instantly.
+    </p>
+
+    <!-- INPUT CARD -->
+    <div class="input-card">
+      <input id="urlInput" type="url" placeholder="Paste product link here..." />
+      <button id="analyzeBtn" type="button" class="analyze-btn" onclick="analyze()">
+      Analyze
+      <i data-lucide="arrow-right"></i>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="features-section fade-up">
+    <h2 class="section-title">Transparent Shopping, Simplified</h2>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="shield-alert"></i></div>
+        <div class="feature-title">Dark Pattern Detection</div>
+        <div class="feature-desc">Detects countdown timers, fake scarcity, hidden fees, and manipulative UI.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="trending-down"></i></div>
+        <div class="feature-title">Fake Discount Checker</div>
+        <div class="feature-desc">Reveals inflated MRPs and misleading discount percentages.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="line-chart"></i></div>
+        <div class="feature-title">Price Tracker</div>
+        <div class="feature-desc">Tracks price history and alerts when prices drop.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="check-circle-2"></i></div>
+        <div class="feature-title">Real MRP Validator</div>
+        <div class="feature-desc">Cross-checks MRP with multiple sources to verify authenticity.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <section id="mission" class="mission-section fade-up">
+    <div class="mission-card">
+      <h2>Our Mission: Transparency in Online Shopping</h2>
+      <p>
+        CLARX empowers consumers by revealing hidden dark patterns, exposing fake discounts,
+        identifying inflated MRPs, and ensuring fair e-commerce practices.
+      </p>
+      <p>
+        We believe every consumer deserves clarity, honesty, and full transparency.
+        Our mission is to become India’s most trusted consumer-protection engine for online retail.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact" class="footer-section">
+    <div class="footer-container">
+
+      <div class="footer-col">
+        <div class="brand">
+          <div class="brand-icon"><i data-lucide="shield-alert"></i></div>
+          <span class="brand-name">CLARX</span>
+        </div>
+        <p class="footer-text">
+          Consumer Lens & Analysis for Retail eXposure<br>
+          Empowering online shoppers with transparency.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#mission">Our Mission</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p><strong>Disclaimer:</strong> CLARX analyzes publicly available data for educational purposes.</p>
+      <p>© 2025 CLARX. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="js/index.js" defer></script>
+
+</body>
+</html>
