@@ -724,6 +724,253 @@
 
       // Initialize with B grade on page load
       setTrustGrade('B');
+
+      // Backend API integration
+      // Auto-detect API URL based on current host
+      const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5000'
+        : `${window.location.protocol}//${window.location.host}`;
+
+      // Check if URL parameter is present
+      const urlParams = new URLSearchParams(window.location.search);
+      const productUrl = urlParams.get('url');
+
+      if (productUrl) {
+        analyzeProduct(productUrl);
+      }
+
+      async function analyzeProduct(url) {
+        // Show loading state
+        showLoading();
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/analyze`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: url }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || 'Analysis failed');
+          }
+
+          // Update UI with results
+          updateUI(data);
+        } catch (error) {
+          console.error('Error:', error);
+          showError(error.message);
+        }
+      }
+
+      function showLoading() {
+        const gradeEl = document.getElementById('trustGrade');
+        if (gradeEl) {
+          gradeEl.textContent = '...';
+        }
+        const riskLabel = document.querySelector('.risk-label');
+        if (riskLabel) {
+          riskLabel.textContent = 'Analyzing...';
+        }
+      }
+
+      function showError(message) {
+        const gradeEl = document.getElementById('trustGrade');
+        if (gradeEl) {
+          gradeEl.textContent = '?';
+        }
+        const riskLabel = document.querySelector('.risk-label');
+        if (riskLabel) {
+          riskLabel.textContent = 'Analysis failed: ' + message;
+        }
+        alert('Analysis failed: ' + message);
+      }
+
+      function updateUI(result) {
+        // Update trust grade
+        setTrustGrade(result.trust_grade);
+
+        // Update risk label
+        const riskLabel = document.querySelector('.risk-label');
+        if (riskLabel) {
+          riskLabel.textContent = result.trust_summary;
+        }
+
+        // Update dark pattern violations
+        updateViolations(result.violations);
+
+        // Update price stats
+        updatePriceStats(result.price);
+
+        // Update price chart
+        updatePriceChart(result.price);
+
+        // Update MRP stats
+        updateMRPStats(result.mrp);
+
+        // Update timer analysis
+        updateTimerAnalysis(result.timer_analysis);
+      }
+
+      function updateViolations(violations) {
+        const grid = document.getElementById('darkPatternGrid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+
+        if (!violations || violations.length === 0) {
+          grid.innerHTML = '<p style="color: var(--text-muted);">No dark patterns detected.</p>';
+          return;
+        }
+
+        violations.forEach(violation => {
+          const card = document.createElement('article');
+          card.className = 'pattern-card';
+
+          const severityClass = violation.severity || 'medium';
+          const severityText = (violation.severity || 'medium').charAt(0).toUpperCase() + 
+                              (violation.severity || 'medium').slice(1);
+
+          card.innerHTML = `
+            <div class="pattern-header">
+              <h3>${violation.title || violation.type}</h3>
+              <span class="severity ${severityClass}">${severityText}</span>
+            </div>
+            <p>${violation.explanation || ''}</p>
+            <strong>Confidence: ${(violation.confidence || 'medium').charAt(0).toUpperCase() + 
+                                  (violation.confidence || 'medium').slice(1)}</strong>
+          `;
+
+          grid.appendChild(card);
+        });
+      }
+
+      function updatePriceStats(priceData) {
+        const stats = document.querySelectorAll('.price-card .stat');
+        if (!stats || stats.length < 4) return;
+
+        // Current Price
+        if (stats[0]) {
+          const valueEl = stats[0].querySelector('.stat-value');
+          if (valueEl && priceData.current) {
+            valueEl.textContent = `₹${priceData.current.toLocaleString('en-IN')}`;
+          }
+        }
+
+        // Highest Price
+        if (stats[1]) {
+          const valueEl = stats[1].querySelector('.stat-value');
+          if (valueEl && priceData.highest) {
+            valueEl.textContent = `₹${priceData.highest.toLocaleString('en-IN')}`;
+          }
+        }
+
+        // Lowest Price
+        if (stats[2]) {
+          const valueEl = stats[2].querySelector('.stat-value');
+          if (valueEl && priceData.lowest) {
+            valueEl.textContent = `₹${priceData.lowest.toLocaleString('en-IN')}`;
+          }
+        }
+
+        // Trend Window
+        if (stats[3]) {
+          const valueEl = stats[3].querySelector('.stat-value');
+          if (valueEl && priceData.trend_window) {
+            valueEl.textContent = priceData.trend_window;
+          }
+        }
+      }
+
+      function updatePriceChart(priceData) {
+        if (!priceData.history || priceData.history.length === 0) return;
+
+        // Format labels (extract day from timestamp)
+        const labels = priceData.history.map(item => {
+          const date = new Date(item.ts);
+          const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          return days[date.getDay()] || date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+        });
+
+        const prices = priceData.history.map(item => item.price);
+
+        priceChart.data.labels = labels;
+        priceChart.data.datasets[0].data = prices;
+        priceChart.update();
+      }
+
+      function updateMRPStats(mrpData) {
+        const stats = document.querySelectorAll('.mrp-card .stat');
+        if (!stats || stats.length < 3) return;
+
+        // Website MRP
+        if (stats[0]) {
+          const valueEl = stats[0].querySelector('.stat-value');
+          if (valueEl && mrpData.site_mrp) {
+            valueEl.textContent = `₹${mrpData.site_mrp.toLocaleString('en-IN')}`;
+          }
+        }
+
+        // Fair MRP
+        if (stats[1]) {
+          const valueEl = stats[1].querySelector('.stat-value');
+          if (valueEl && mrpData.fair_mrp) {
+            valueEl.textContent = `₹${mrpData.fair_mrp.toLocaleString('en-IN')}`;
+          }
+        }
+
+        // Inflation
+        if (stats[2]) {
+          const valueEl = stats[2].querySelector('.stat-value');
+          if (valueEl && mrpData.inflation_pct !== undefined) {
+            const sign = mrpData.inflation_pct > 0 ? '+' : '';
+            valueEl.textContent = `${sign}${mrpData.inflation_pct.toFixed(1)}%`;
+          }
+        }
+      }
+
+      function updateTimerAnalysis(timerData) {
+        if (!timerData) return;
+
+        const statusPill = document.querySelector('.status-pill');
+        const confidencePill = document.querySelector('.confidence-pill');
+        const reasonList = document.querySelector('.reason-list');
+
+        // Update status
+        if (statusPill) {
+          if (timerData.fake_timer) {
+            statusPill.textContent = 'Timer status: Suspicious';
+            statusPill.className = 'status-pill alert';
+          } else {
+            statusPill.textContent = 'Timer status: Real';
+            statusPill.className = 'status-pill';
+          }
+        }
+
+        // Update confidence
+        if (confidencePill) {
+          const confidence = (timerData.confidence || 'medium').charAt(0).toUpperCase() + 
+                            (timerData.confidence || 'medium').slice(1);
+          confidencePill.textContent = `Confidence: ${confidence}`;
+          confidencePill.className = `confidence-pill ${timerData.confidence || 'medium'}`;
+        }
+
+        // Update reasons
+        if (reasonList && timerData.reasons) {
+          reasonList.innerHTML = '';
+          timerData.reasons.forEach(reason => {
+            const li = document.createElement('li');
+            li.textContent = reason;
+            reasonList.appendChild(li);
+          });
+        }
+      }
+
+      // Expose analyzeProduct globally for use from index.html
+      window.analyzeProduct = analyzeProduct;
     </script>
   </body>
 </html>
