@@ -1,6 +1,6 @@
 from flask import Flask, request
-from scraper.html_fetcher import fetch_html
-from detectors.run_all import run_all_detectors
+from backend.scraper.html_fetcher import fetch_html
+from backend.detectors.run_all import run_all_detectors
 
 app = Flask(__name__)
 
