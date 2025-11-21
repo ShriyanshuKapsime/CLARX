@@ -34,7 +34,7 @@ async function analyze() {
         localStorage.setItem("analysis_result", JSON.stringify(data));
 
         // FIX: redirect to actual results page
-        window.location.href = "2ndPage.html";
+        window.location.href = "results.html";
 
     } catch (error) {
         console.error(error);
