@@ -94,6 +94,75 @@ body{
 .reason-list{margin:0;padding:0;list-style:none}
 .reason-list li{padding:8px;border-radius:8px;background:rgba(248,250,255,0.95);margin-bottom:8px}
 
+/* MRP Reality Check */
+.mrp-status{
+  padding:16px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.9);
+  border:1px solid rgba(15,23,42,0.03);
+}
+.mrp-status.genuine{
+  background:rgba(34,197,94,0.08);
+  border-color:rgba(34,197,94,0.2);
+}
+.mrp-status.genuine p{
+  color:#15803d;
+  font-weight:600;
+  margin:0 0 8px;
+}
+.mrp-status.inflated{
+  background:rgba(250,204,21,0.12);
+  border-color:rgba(250,204,21,0.25);
+}
+.mrp-status.inflated.high{
+  background:rgba(239,68,68,0.1);
+  border-color:rgba(239,68,68,0.25);
+}
+.mrp-status.inflated.medium{
+  background:rgba(251,191,36,0.12);
+  border-color:rgba(251,191,36,0.25);
+}
+.mrp-warning h3{
+  margin:0 0 10px;
+  color:#b91c1c;
+  font-size:16px;
+}
+.mrp-warning p{
+  margin:0 0 12px;
+}
+.mrp-details{
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid rgba(15,23,42,0.05);
+}
+.mrp-details strong{
+  display:block;
+  margin-bottom:8px;
+  color:#b91c1c;
+}
+.mrp-details small{
+  display:block;
+  margin-top:4px;
+}
+.mrp-comparison{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:12px;
+}
+.mrp-comparison div{
+  padding:6px 0;
+  border-bottom:1px solid rgba(15,23,42,0.05);
+}
+.mrp-comparison div:last-child{
+  border-bottom:none;
+}
+.mrp-comparison strong{
+  display:inline-block;
+  min-width:140px;
+  color:#0f172a;
+}
+
 /* back link */
 .back-link{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-weight:700;text-decoration:none;margin-top:8px}
 
