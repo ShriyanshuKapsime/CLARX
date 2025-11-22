@@ -2,13 +2,10 @@ import hashlib
 import sqlite3
 import os
 
-# Path to DB inside backend/database/
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "database", "price_history.sqlite")
 DB_PATH = os.path.abspath(DB_PATH)
 
-
-def get_product_id(url: str) -> str:
-    """Consistent hashed product ID."""
+def get_product_id(url):
     return hashlib.md5(url.encode()).hexdigest()
 
 
@@ -17,60 +14,42 @@ class PriceTracker:
     def _connect(self):
         return sqlite3.connect(DB_PATH, check_same_thread=False)
 
-    def save_price(self, product_url: str, price: float, mrp: float = None):
-        """
-        Insert a new price entry into the database.
-        """
-        product_id = get_product_id(product_url)
+    def save_price(self, url, price, mrp=None):
+        pid = get_product_id(url)
 
         conn = self._connect()
-        cursor = conn.cursor()
+        cur = conn.cursor()
 
-        cursor.execute(
-            """
+        cur.execute("""
             INSERT INTO price_history (product_id, product_url, price, mrp)
             VALUES (?, ?, ?, ?)
-            """,
-            (product_id, product_url, price, mrp)
-        )
+        """, (pid, url, price, mrp))
 
         conn.commit()
         conn.close()
 
-        return {
-            "status": "saved",
-            "product_id": product_id,
-            "price": price,
-            "mrp": mrp
-        }
+        return {"status": "saved"}
 
-    def get_history(self, product_url: str):
-        """
-        Fetch the entire price history of the product.
-        """
-        product_id = get_product_id(product_url)
+    def get_history(self, url):
+        pid = get_product_id(url)
 
         conn = self._connect()
-        cursor = conn.cursor()
+        cur = conn.cursor()
 
-        cursor.execute(
-            """
+        cur.execute("""
             SELECT price, mrp, timestamp
             FROM price_history
             WHERE product_id = ?
             ORDER BY timestamp ASC
-            """,
-            (product_id,)
-        )
+        """, (pid,))
 
-        rows = cursor.fetchall()
+        rows = cur.fetchall()
         conn.close()
 
         return {
-            "product_id": product_id,
+            "product_id": pid,
             "history": [
                 {"price": r[0], "mrp": r[1], "timestamp": r[2]}
                 for r in rows
             ]
         }
-

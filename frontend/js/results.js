@@ -95,7 +95,10 @@ function populateFromDetections(d) {
   // 5) Timer / scarcity
   renderTimerAndReasons(d);
 
-  // 6) product summary
+  // 6) MRP Inflation Check
+  renderMrpInflation(d);
+
+  // 7) product summary
   const summaryEl = document.getElementById("productSummary");
   if (summaryEl) {
     const priceText = priceInfo.price ? `Current price ₹${priceInfo.price}` : "";
@@ -151,14 +154,20 @@ function buildViolationsList(d) {
       explanation: `Matched text: ${Array.isArray(d.scarcity.matches) ? d.scarcity.matches.join(", ") : ""}`
     });
   }
-  if (d.timer?.detected) {
-    res.push({
-      type: "fake_timer",
-      title: "Fake Countdown Timer",
-      severity: d.timer.confidence === "high" ? "high" : "medium",
-      confidence: d.timer.confidence || "medium",
-      explanation: `Flags: ${d.timer.flags ? Object.keys(d.timer.flags).filter(k=>d.timer.flags[k]).join(", ") : "client-only evidence"}`
-    });
+  if (d.timer?.detected === true) {
+    // Only add to violations if timer is detected AND has suspicious flags
+    const flags = d.timer.flags || {};
+    const hasSuspiciousFlags = Object.values(flags).some(v => v === true);
+    
+    if (hasSuspiciousFlags) {
+      res.push({
+        type: "fake_timer",
+        title: "Fake Countdown Timer",
+        severity: d.timer.confidence === "high" ? "high" : "medium",
+        confidence: d.timer.confidence || "medium",
+        explanation: d.timer.friendly_msg || `Suspicious flags: ${Object.keys(flags).filter(k=>flags[k]).join(", ")}`
+      });
+    }
   }
   if (d.addons?.detected) {
     res.push({
@@ -310,41 +319,191 @@ function renderPriceChart(history, current) {
 
 /* timer / reasons */
 function renderTimerAndReasons(d) {
+  const timerSection = document.getElementById("timerSection");
   const statusEl = document.getElementById("timerStatus");
   const confEl = document.getElementById("timerConfidence");
   const list = document.querySelector(".reason-list");
 
-  // In your sample data: timer:{detected:true,confidence:"medium",flags:{frontend_only:true,...},matches:[..]}
-  if (d.timer) {
-    const fake = !!d.timer.detected;
-    if (statusEl) {
-      statusEl.textContent = fake ? "Timer status: Suspicious" : "Timer status: Real";
-      statusEl.style.background = fake ? "rgba(239,68,68,0.08)" : "rgba(34,197,94,0.06)";
-      statusEl.style.color = fake ? "#b91c1c" : "#15803d";
+  // If no timer data, hide the section
+  if (!d.timer) {
+    if (timerSection) timerSection.style.display = "none";
+    return;
+  }
+
+  // Show the section
+  if (timerSection) timerSection.style.display = "";
+
+  // If timer is NOT detected, hide the section or show minimal message
+  if (d.timer.detected === false) {
+    if (timerSection) {
+      // Option 1: Hide entirely
+      timerSection.style.display = "none";
+      // Option 2: Show minimal message (uncomment if preferred)
+      // timerSection.style.display = "";
+      // if (statusEl) {
+      //   statusEl.textContent = "No timer or countdown found on this product.";
+      //   statusEl.style.background = "rgba(148,163,184,0.08)";
+      //   statusEl.style.color = "#64748b";
+      // }
+      // if (confEl) confEl.textContent = "";
+      // if (list) list.innerHTML = "";
     }
-    if (confEl) confEl.textContent = `Confidence: ${d.timer.confidence || 'medium'}`;
-    if (list) {
+    return;
+  }
+
+  // Timer WAS detected - show full analysis
+  if (d.timer.detected === true) {
+    // Display friendly message
+    if (d.timer.friendly_msg && list) {
+      const friendlyLi = document.createElement('li');
+      friendlyLi.style.fontWeight = "600";
+      friendlyLi.style.marginBottom = "8px";
+      friendlyLi.textContent = d.timer.friendly_msg;
       list.innerHTML = "";
-      // prefer reasons if backend supplies them
-      if (Array.isArray(d.timer.reasons) && d.timer.reasons.length) {
-        d.timer.reasons.forEach(r => { const li = document.createElement('li'); li.textContent = r; list.appendChild(li); });
+      list.appendChild(friendlyLi);
+    }
+
+    // Determine if timer is suspicious based on flags
+    const flags = d.timer.flags || {};
+    const hasSuspiciousFlags = Object.values(flags).some(v => v === true);
+    
+    if (statusEl) {
+      if (hasSuspiciousFlags) {
+        statusEl.textContent = "Timer Detected: Suspicious";
+        statusEl.style.background = "rgba(239,68,68,0.08)";
+        statusEl.style.color = "#b91c1c";
       } else {
-        // build from flags and matches
-        if (d.timer.flags) {
-          Object.entries(d.timer.flags).forEach(([k,v]) => {
-            const li = document.createElement('li'); li.textContent = `${k}: ${v}`; list.appendChild(li);
-          });
-        }
-        if (Array.isArray(d.timer.matches) && d.timer.matches.length) {
-          d.timer.matches.forEach(m => { const li = document.createElement('li'); li.textContent = `matched: ${m}`; list.appendChild(li);});
-        }
+        statusEl.textContent = "Timer Detected: Legitimate";
+        statusEl.style.background = "rgba(34,197,94,0.06)";
+        statusEl.style.color = "#15803d";
       }
     }
-  } else {
-    if (statusEl) statusEl.textContent = "Timer not detected";
-    if (confEl) confEl.textContent = "";
-    if (list) list.innerHTML = "<li>No timer evidence provided.</li>";
+
+    // Show confidence
+    if (confEl) {
+      const confidence = d.timer.confidence || "medium";
+      confEl.textContent = `Confidence: ${confidence}`;
+    }
+
+    // Show flags
+    if (list && flags) {
+      const flagsList = document.createElement('ul');
+      flagsList.style.marginTop = "12px";
+      flagsList.style.paddingLeft = "20px";
+      flagsList.style.listStyle = "disc";
+      
+      Object.entries(flags).forEach(([key, value]) => {
+        if (value === true) {
+          const li = document.createElement('li');
+          const flagLabels = {
+            "reset_on_refresh": "Timer resets on page refresh",
+            "frontend_only": "Client-side only timer (no server validation)",
+            "missing_tnc": "Missing expiry date or terms & conditions"
+          };
+          li.textContent = flagLabels[key] || `${key}: ${value}`;
+          li.style.marginBottom = "4px";
+          flagsList.appendChild(li);
+        }
+      });
+      
+      if (flagsList.children.length > 0) {
+        list.appendChild(flagsList);
+      }
+    }
+
+    // Show matches (detection evidence)
+    if (d.timer.matches && Array.isArray(d.timer.matches) && d.timer.matches.length > 0 && list) {
+      const matchesDiv = document.createElement('div');
+      matchesDiv.style.marginTop = "12px";
+      matchesDiv.style.fontSize = "0.875rem";
+      matchesDiv.style.color = "#64748b";
+      matchesDiv.innerHTML = `<strong>Detection evidence:</strong> ${d.timer.matches.join(", ")}`;
+      list.appendChild(matchesDiv);
+    }
   }
+}
+
+/* MRP Inflation Check */
+function renderMrpInflation(d) {
+  const el = document.getElementById("mrpCheckContent");
+  if (!el) return;
+
+  // Get MRP Reality Check data (new comprehensive check)
+  const mrpReality = d.mrp_reality_check || {};
+  const priceInfo = d.price_info || {};
+  const mrpCheck = d.mrp_check || d.mrp_inflation || {};
+  
+  // Use MRP from mrp_reality_check first, then fallback
+  const listedMrp = mrpReality.listed_mrp || priceInfo.mrp || mrpCheck.listed_mrp || null;
+  const benchmarkMrp = mrpReality.benchmark_mrp || null;
+  const inflationFactor = mrpReality.inflation_factor || null;
+  const mrpSource = mrpReality.mrp_source || null;
+  const confidence = mrpReality.confidence || null;
+  const price = priceInfo.price || mrpCheck.price || null;
+
+  // If no MRP found anywhere
+  if (!listedMrp && listedMrp !== 0) {
+    el.innerHTML = `
+      <div class="mrp-status">
+        <p class="muted">MRP not provided. Could not verify authenticity.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // If no price, can't compare
+  if (!price && price !== 0) {
+    el.innerHTML = `
+      <div class="mrp-status">
+        <p class="muted">MRP: ₹${Number(listedMrp).toLocaleString('en-IN')}</p>
+        <p class="muted">Price information not available for comparison.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Check if MRP is inflated
+  const ratio = listedMrp / price;
+  const isInflated = inflationFactor ? inflationFactor > 1.3 : ratio > 1.4;
+
+  // Display based on MRP Reality Check data
+  if (isInflated) {
+    const multiplier = inflationFactor ? inflationFactor.toFixed(1) : ratio.toFixed(1);
+    const severity = (inflationFactor || ratio) > 2.5 ? 'high' : 'medium';
+    
+    el.innerHTML = `
+      <div class="mrp-status inflated ${severity}">
+        <div class="mrp-warning">
+          <h3>⚠️ Possible MRP Inflation</h3>
+          <div class="mrp-details">
+            <div class="mrp-comparison">
+              <div><strong>Listed MRP:</strong> ₹${Number(listedMrp).toLocaleString('en-IN')}</div>
+              ${benchmarkMrp ? `<div><strong>Benchmark MRP:</strong> ₹${Number(benchmarkMrp).toLocaleString('en-IN')}</div>` : ''}
+              <div><strong>Selling Price:</strong> ₹${Number(price).toLocaleString('en-IN')}</div>
+              ${inflationFactor ? `<div><strong>Inflation factor:</strong> ${multiplier}× inflated compared to ${benchmarkMrp ? 'market average' : 'selling price'}</div>` : `<div><strong>This MRP might be inflated by ${multiplier}×.</strong></div>`}
+            </div>
+            ${mrpSource ? `<small class="muted">MRP source: ${mrpSource} (${confidence || 'unknown'} confidence)</small>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // MRP appears reasonable
+  el.innerHTML = `
+    <div class="mrp-status genuine">
+      <p>✔️ The MRP appears reasonable.</p>
+      <div class="mrp-details">
+        <div class="mrp-comparison">
+          <div><strong>Listed MRP:</strong> ₹${Number(listedMrp).toLocaleString('en-IN')}</div>
+          ${benchmarkMrp ? `<div><strong>Benchmark MRP:</strong> ₹${Number(benchmarkMrp).toLocaleString('en-IN')}</div>` : ''}
+          <div><strong>Selling Price:</strong> ₹${Number(price).toLocaleString('en-IN')}</div>
+        </div>
+        ${mrpSource ? `<small class="muted">MRP source: ${mrpSource} (${confidence || 'unknown'} confidence)</small>` : ''}
+      </div>
+    </div>
+  `;
 }
 
 /* tiny helper */

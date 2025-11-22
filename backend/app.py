@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS  # ← ADDED
 from backend.scraper.html_fetcher import fetch_html
-from backend.scraper.price_extractor import extract_price_and_mrp
+from backend.scraper.price_extractor import extract_price_and_mrp, extract_price_and_mrp_detailed
 from backend.detectors.run_all import run_all_detectors
+from backend.detectors.mrp_auth_checker import check_mrp_authenticity
 from backend.price_tracker.track_price import PriceTracker
 
 app = Flask(__name__)
@@ -60,18 +61,36 @@ def analyze():
         
         # Fetch and analyze
         html = fetch_html(url)
-        price, mrp = extract_price_and_mrp(html)
+        
+        # Extract price and MRP with detailed information
+        price_data = extract_price_and_mrp_detailed(html, url=url)
+        price = price_data.get("selling_price") if price_data else None
+        mrp = price_data.get("mrp") if price_data else None
 
         # Save price history
         if price:
             tracker.save_price(url, price, mrp)
 
-        # Run detectors
-        detections = run_all_detectors(html, url=url)
+        # Run detectors (pass price and mrp for MRP inflation check)
+        detections = run_all_detectors(html, url=url, price=price, mrp=mrp)
+        
+        # MRP Authenticity Check
+        detections["mrp_check"] = check_mrp_authenticity(html, url, listed_mrp=mrp, price=price)
         
         # Add price info
         detections["price_info"] = {"price": price, "mrp": mrp}
         detections["price_history"] = tracker.get_history(url)["history"]
+        
+        # Add MRP Reality Check section
+        if price_data:
+            detections["mrp_reality_check"] = {
+                "listed_mrp": price_data.get("mrp"),
+                "benchmark_mrp": price_data.get("benchmark_mrp"),
+                "inflation_factor": price_data.get("inflation_factor"),
+                "mrp_source": price_data.get("mrp_source"),
+                "confidence": price_data.get("confidence"),
+                "message": price_data.get("message", "MRP information not available.")
+            }
 
         return jsonify({"detections": detections}), 200
         
