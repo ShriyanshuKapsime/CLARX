@@ -1,294 +1,205 @@
-# ClearBuy / ClearCart / TruthLens
+**CLARX — Consumer Lens & Analysis for Retail eXposure**
+A transparency tool that protects online shoppers from dark patterns, fake discounts, and MRP manipulation.
+🚀 About the Project
 
-A full-stack web application that analyzes e-commerce product pages for dark patterns, fake discounts, price manipulation, and timer authenticity.
+CLARX is a consumer-protection web tool designed to identify manipulative tactics on e-commerce websites such as Amazon, Flipkart, Myntra, and others.
 
-## Features
+It analyzes any product link and reveals:
 
-- **Dark Pattern Detection**: Identifies fake scarcity, drip pricing, fake timers, pre-ticked add-ons, and confirm shaming
-- **Price Tracking**: Tracks price history and detects inflation
-- **Timer Analysis**: Validates countdown timers for authenticity
-- **Trust Score**: Generates A-F grade based on detected manipulations
-- **Real-time Analysis**: Scrapes product pages using Selenium and provides instant results
+1. Fake discounts 
+2. Hidden dark patterns
+3. Price authenticity
+4. Scarcity tricks (“Only 1 left!”)
+5. Suspicious timers / urgency triggers
+And more.
 
-## Tech Stack
+The goal is simple:
+👉 Empower consumers to make smarter, transparent buying decisions.
 
-- **Backend**: Flask (Python)
-- **Frontend**: HTML, CSS, JavaScript (Vanilla)
-- **Database**: SQLite
-- **Scraping**: Selenium WebDriver
-- **Charts**: Chart.js
+⚠️ Why CLARX? — The Problem
 
-## Prerequisites
+In 2023, the Government of India officially banned "dark patterns" used by online retailers to manipulate buyers.
 
-- Python 3.8+
-- Chrome browser
-- ChromeDriver (must be in PATH or install via webdriver-manager)
+But…
 
-## Installation
+--> Fake “Hurry! Only 2 left!” messages
 
-### 1. Clone the repository
+--> Inflated MRP tricking users
 
-```bash
-git clone <repository-url>
+--> False timers resetting on every refresh
+
+--> Misleading discount percentages
+
+--> Hidden charges
+
+…are still commonly found on major shopping sites.
+
+Most consumers do not notice these patterns, leading to overspending and misinformed buying decisions.
+
+There is no simple tool to automatically check whether a product page is genuine or manipulative.
+
+✅ Our Solution
+
+CLARX acts as your shopping truth detector.
+
+Paste any product link → CLARX analyzes the entire webpage and returns a clear, readable explanation of all manipulative patterns found.
+
+🧠 What CLARX Analyzes
+✔ Dark Pattern Detection
+
+Fake scarcity (“Only 1 left!”)
+
+Suspicious countdown timers
+
+Pre-ticked add-ons
+
+Drip pricing (hidden fees revealed later)
+
+✔ MRP Authenticity Checker
+
+Detects inflated MRPs
+
+Estimates real MRP using price logic
+
+Fetches structured data (JSON-LD) when available
+
+Compares discounts with realistic market norms
+
+✔ Price Extraction
+
+Accurate selling price extraction
+
+Accurate MRP extraction
+
+Supports Amazon, Flipkart, Myntra
+
+Cross-checks multiple selectors
+
+✔ Easy-to-Read UI
+
+Trust grade (A–F)
+
+Color-coded risk meter
+
+Detailed breakdown of violations
+
+Price authenticity card
+
+User-friendly explanations
+
+🏗️ Tech Stack
+Frontend
+
+HTML, CSS, JavaScript
+
+Lucide Icons
+
+Chart.js
+
+Responsive UI components
+
+Backend
+
+Python
+
+Flask
+
+BeautifulSoup (HTML parsing)
+
+Regex-based heuristic detectors
+
+SQLite for price logs
+
+CORS enabled
+
+Architecture
+Frontend (HTML/CSS/JS)
+        ↓ sends URL
+Backend (Flask API)
+        ↓ fetches HTML
+Scraper → Detectors → MRP Checker
+        ↓ returns JSON
+Frontend renders results
+
+📦 Features
+Feature	Description
+🔍 Dark Pattern Scanner	Detects fake scarcity, timers, add-ons, hidden fees
+🧠 Trust Score	A–F grade with risk color indicators
+💰 Price Checker	Extracts selling price & MRP accurately
+⚖️ MRP Authenticity	Checks if MRP is inflated or manipulated
+📊 Result Dashboard	Clean UI with cards, colors, explanations
+💾 Local Result Storage	Displays last analysis instantly
+🌐 Works Across Sites	Amazon, Flipkart, Myntra support
+🖼️ Screenshots
+
+(Add your images here if needed.)
+Example sections:
+
+Home Page
+
+Result Page
+
+Violation Cards
+
+Price & MRP section
+
+🧪 How to Run Locally
+1. Clone repo
+git clone https://github.com/yourusername/CLARX.git
 cd CLARX
-```
 
-### 2. Create virtual environment
-
-```bash
-python -m venv venv
-```
-
-### 3. Activate virtual environment
-
-**Windows:**
-```bash
-venv\Scripts\activate
-```
-
-**Linux/Mac:**
-```bash
-source venv/bin/activate
-```
-
-### 4. Install dependencies
-
-```bash
+2. Setup backend
 cd backend
 pip install -r requirements.txt
-```
-
-### 5. Install ChromeDriver
-
-**Option A: Using webdriver-manager (Recommended)**
-```bash
-pip install webdriver-manager
-```
-
-Then update `backend/scraper.py` to use:
-```python
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
-
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=options)
-```
-
-**Option B: Manual installation**
-1. Download ChromeDriver from https://chromedriver.chromium.org/
-2. Extract and add to PATH
-3. Or place in project root directory
-
-## Running the Application
-
-### 1. Start the backend server
-
-```bash
-cd backend
 python app.py
-```
 
-The server will start on `http://localhost:5000`
 
-### 2. Open the frontend
+Backend runs at:
+➡️ http://127.0.0.1:5000
 
-**Option A: Direct file access**
-- Open `frontend/index.html` in your browser
+3. Run frontend
 
-**Option B: Using Flask static serving (Recommended)**
-- Update `backend/app.py` to serve static files:
-```python
-from flask import send_from_directory
+Open the frontend/index.html directly or use Live Server.
 
-@app.route('/')
-def index():
-    return send_from_directory('../frontend', 'index.html')
-
-@app.route('/<path:path>')
-def serve_static(path):
-    return send_from_directory('../frontend', path)
-```
-
-Then access at `http://localhost:5000`
-
-## Usage
-
-1. Open the application in your browser
-2. Paste a product URL from Flipkart, Amazon, Myntra, etc.
-3. Click "Analyze Now"
-4. View the analysis results including:
-   - Trust Score (A-F grade)
-   - Dark Pattern Violations
-   - Price History and Trends
-   - MRP Analysis
-   - Timer Manipulation Detection
-
-## API Endpoints
-
-### POST /analyze
-Analyze a product URL
-
-**Request:**
-```json
+📜 API Endpoints
+Endpoint	Method	Description
+/analyze	POST	Analyzes a product page
+/test	GET	Checks if backend is running
+/scrape	POST	Returns raw HTML length
+/test/get_history	POST	(optional) Retrieves price logs
+📌 Output Format (JSON)
 {
-  "url": "https://www.flipkart.com/product-url"
+  "detections": {
+    "scarcity": {...},
+    "timer": {...},
+    "addons": {...},
+    "drip_pricing": {...},
+    "price_info": {
+      "price": 799,
+      "mrp": 1499
+    },
+    "mrp_authenticity": {...}
+  }
 }
-```
 
-**Response:**
-```json
-{
-  "job_id": 1,
-  "url": "...",
-  "trust_grade": "B",
-  "trust_summary": "Moderate Risk",
-  "violations": [...],
-  "price": {...},
-  "mrp": {...},
-  "timer_analysis": {...}
-}
-```
+🧩 Future Enhancements
 
-### GET /history?url={url}
-Get price history for a URL
+Browser extension for real-time warnings
 
-### GET /job/{job_id}
-Get job status and result
+Multisite comparison feature
 
-## Project Structure
+AI-based text classifier for fake scarcity
 
-```
-CLARX/
-├── backend/
-│   ├── app.py              # Flask application
-│   ├── models.py           # Database models
-│   ├── scraper.py          # Selenium scraper
-│   ├── detector.py         # Dark pattern detectors
-│   └── requirements.txt    # Python dependencies
-├── frontend/
-│   ├── index.html          # Landing page
-│   └── 2ndPage.html        # Results page
-└── README.md
-```
+Better official MRP detection
 
-## Database
+User history dashboard
 
-SQLite database (`clarx.db`) is automatically created on first run. It contains:
+🛡️ Disclaimer
 
-- **urls**: Product URLs and metadata
-- **prices**: Price history records
-- **jobs**: Analysis job tracking
+CLARX analyzes publicly available data for educational and research purposes.
+We are not affiliated with any e-commerce platform.
 
-## Configuration
+👨‍💻 Team
 
-### Rate Limiting
-Default: 5 requests per 60 seconds per IP
-Modify in `backend/app.py`:
-```python
-RATE_LIMIT_REQUESTS = 5
-RATE_LIMIT_WINDOW = 60
-```
-
-### Scraping Settings
-Modify in `backend/scraper.py`:
-```python
-scraper = Scraper(headless=True, wait_time=3)
-```
-
-## Troubleshooting
-
-### ChromeDriver not found
-- Ensure ChromeDriver is in PATH
-- Or use webdriver-manager (see Installation step 5)
-
-### Cloudflare/Access Denied errors
-- Some sites have bot protection
-- Try different URLs or increase wait_time in scraper
-
-### Port already in use
-- Change port in `backend/app.py`:
-```python
-app.run(debug=True, host='0.0.0.0', port=5001)
-```
-
-## Development
-
-### Running in Development Mode
-
-```bash
-export FLASK_ENV=development
-python backend/app.py
-```
-
-### Testing
-
-Test the API:
-```bash
-curl -X POST http://localhost:5000/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://www.flipkart.com/example-product"}'
-```
-
-## Security & Legal Notes
-
-- This tool is for educational and consumer research purposes
-- Scraping is user-initiated only (no background crawling)
-- Respect robots.txt and terms of service
-- Rate limiting is implemented to prevent abuse
-- Data stored is limited to price history and analysis results
-
-## Deployment
-
-### Heroku
-
-1. Create `Procfile`:
-```
-web: python backend/app.py
-```
-
-2. Add buildpack for Chrome:
-```
-heroku buildpacks:add heroku/google-chrome
-heroku buildpacks:add heroku/chromedriver
-```
-
-3. Deploy:
-```bash
-git push heroku main
-```
-
-### Docker (Optional)
-
-Create `Dockerfile`:
-```dockerfile
-FROM python:3.9-slim
-
-RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    unzip \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Chrome
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable
-
-WORKDIR /app
-COPY backend/requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY . .
-
-CMD ["python", "backend/app.py"]
-```
-
-## License
-
-This project is for educational purposes.
-
-## Support
-
-For issues or questions, please open an issue on the repository.
+Built with passion by
+**Team — Protostars**
